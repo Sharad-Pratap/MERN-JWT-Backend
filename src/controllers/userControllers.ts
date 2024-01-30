@@ -77,34 +77,35 @@ export const sendVerificationMail: RequestHandler = async (req, res, next) => {
       expiresIn: "60m",
     });
 
-    let info = await transporter.sendMail({
-      from: mail_user, // sender address
-      to: `${email}`, // list of receivers
-      subject: "For Email Verification", // Subject line
-      // text: "Hello world?", // plain text body
-      html: `Your Verification Link <a href="${FRONTEND_URL}/email-verify/${jwtToken}">Link</a>`, // html body
-    })
-    
-
-    // var mailOptions = {
-    //   from: mail_user,
-    //   to: `${email}`,
+    // let info = await transporter.sendMail({
+    //   from: mail_user, // sender address
+    //   to: `${email}`, // list of receivers
     //   subject: "For Email Verification", // Subject line
+    //   // text: "Hello world?", // plain text body
     //   html: `Your Verification Link <a href="${FRONTEND_URL}/email-verify/${jwtToken}">Link</a>`, // html body
-    // };
+    // })
+     
 
-    // transporter.sendMail(mailOptions, function (error, info) {
-    //   if (error) {
-    //     console.log(error);
-    //   } else {
-    //     console.log("Email sent: " + info.response);
-    //   }
-    // });
+    var mailOptions = {
+      from: mail_user,
+      to: `${email}`,
+      subject: "For Email Verification", // Subject line
+      html: `Your Verification Link <a href="${FRONTEND_URL}/email-verify/${jwtToken}">Link</a>`, // html body
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
     // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 
     await user.updateOne({ $set: { verifyToken: encryptedToken } });
     res.json({
-      message: `Preview URL: %s ${nodemailer.getTestMessageUrl(info)}`,
+      // message: `Preview URL: %s ${nodemailer.getTestMessageUrl(info)}`,
+      message : "Email sent"
     });
   } catch (error) {
     return next(InternalServerError);
@@ -147,20 +148,34 @@ export const sendForgotPasswordMail: RequestHandler = async (
       expiresIn: "60m",
     });
 
-    let info = await transporter.sendMail({
-      from: '"Fred Foo 👻" <anshuraj@dosomecoding.com>', // sender address
-      to: `${email}`, // list of receivers
-      subject: "For Forgot Password Verification Mail", // Subject line
-      // text: "Hello world?", // plain text body
-      html: `Your Verification for forgot password Link <a href="${FRONTEND_URL}/forgot-password-verify/${jwtToken}">Link</a>`, // html body
-    });
+    // let info = await transporter.sendMail({
+    //   from: mail_user, // sender address
+    //   to: `${email}`, // list of receivers
+    //   subject: "For Forgot Password Verification Mail", // Subject line
+    //   // text: "Hello world?", // plain text body
+    //   html: `Your Verification for forgot password Link <a href="${FRONTEND_URL}/forgot-password-verify/${jwtToken}">Link</a>`, // html body
+    // });
 
     // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    var mailOptions = {
+      from: mail_user,
+      to: `${email}`,
+      subject: "For Email Verification", // Subject line
+      html: `Your Verification for forgot password Link <a href="${FRONTEND_URL}/forgot-password-verify/${jwtToken}">Link</a>`, // html body
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
 
     await user.updateOne({ $set: { verifyToken: encryptedToken } });
 
     res.json({
-      message: `Preview URL: %s ${nodemailer.getTestMessageUrl(info)}`,
+      message: "Email Sent",
     });
   } catch (error) {
     return next(InternalServerError);
